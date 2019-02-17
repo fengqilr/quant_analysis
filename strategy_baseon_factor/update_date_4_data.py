@@ -9,11 +9,11 @@ with MongodbUtils('factor_db', 'stock_price', '127.0.0.1', 27017) as price_colle
     cur = price_collection.find(projection=['trade_date']).distinct('trade_date')
     trade_dates = list(cur)
     for trade_date in trade_dates:
-        print trade_date
+        print(trade_date)
         # _id = info['_id']
         # trade_date = info['trade_date']
         trade_date_stamp = int(time.mktime(time.strptime(trade_date, '%Y%m%d')))
-        price_collection.update({"trade_date": trade_date}, {"$set": {'trade_date_stamp': trade_date_stamp}})
+        price_collection.update_many({"trade_date": trade_date}, {"$set": {'trade_date_stamp': trade_date_stamp}})
 
 
 # with MongodbUtils('factor_db', 'stock_price', '127.0.0.1', 27017) as price_collection:

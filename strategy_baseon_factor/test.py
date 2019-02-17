@@ -1,36 +1,74 @@
-# -*- coding: utf-8 -*-
+
+# coding: utf-8
+
+# In[1]:
+
 
 import pandas as pd
-from pymongo import MongoClient
-import time
+# -*- coding: utf-8 -*-
+from test_factor_performance import test_market_year_performance,test_single_performance, test_two_factors_inersection_effect
 
-import sys
-# sys.path.append("D:\PycharmProjects\quant_analyze\quartz\quantify")
-# from core import StrategyBase
-s1 = time.time()
-Client = MongoClient(host='127.0.0.1', port=27017)
-db = Client['factor_db']
-collection = db['stock_quality']
-cur = collection.find({"end_date": "20110930"})
-infos = list(cur)
-s2 = time.time()
-print s2-s1
-df = pd.DataFrame(infos)
-print df.isna().sum()/float(len(df))
-#
-# cur = collection.find_one(projection=['trade_date', 'end_date'])
-# print cur
-# info_list = list(cur)
-# print info_list[0]
-# trade_dates = list(set([info['trade_date'] for info in info_list]))
-#
-# trade_dates = info_list
-# trade_dates.sort()
-# #
-# pd.to_pickle(trade_dates, "trade_dates.pkl")
-# trade_dates = pd.read_pickle('trade_dates.pkl')
-# strategy_clf = StrategyBase(start='20100101', end='20150101', hist=1, benchmark='000001.SZ', universe='a',
-#                             capital_base=10000, commission=0.001, slippage=0, db_ip='47.110.156.244', db_port=27017)
-# print trade_dates[5000]
-# df = strategy_clf.read_data(trade_dates[5000])
-# print pd.isna(df).sum()
+
+# In[1]:
+
+
+# df = test_market_year_performance('200707', '201806')
+
+
+# In[2]:
+
+
+factors = [ 'price_2_dividend','total_mv','pe_ttm','cashflowratio', 'cf_liabilities', 'cf_nm', 'cf_sales','currentratio',  'goodwillratio', 'gross_profit_rate',  'net_profit_ratio', 'net_profit_ratio_v2', 'quickratio', 'rateofreturn', 'roe', 'roe_std',
+       'roe_trend', 'roe_v2', 'roe_v2_std', 'roe_v2_trend', 'sheqratio',  'circ_mv', 'cmp_gain','pb']
+
+
+# In[10]:
+
+# print("factor count %s" % (len(factors)))
+# factor_perf = {}
+# for factor_name in factors:
+#     df = test_single_performance(factor_name, '200707', '201806', 4, {})
+#     perfs = df.prod()
+#     factor_perf.update({factor_name: perfs})
+
+# print("factor perf count %s" % len(factor_perf))
+
+# In[19]:
+
+
+
+
+
+# In[16]:
+
+
+# perfs = []
+# for factor_name, perf in factor_perf.items():
+
+# #     print(factor_name)
+#     perf_dict = perf.to_dict()
+#     perf_dict.update({'factor_name': factor_name})
+#     perfs.append(perf_dict)
+# perf_df = pd.DataFrame(perfs)
+# print(perf_df)
+
+
+# In[9]:
+
+for factor_name in factors:
+    if factor_name not in ['total_mv', 'circ_mv']:
+        df = test_two_factors_inersection_effect('circ_mv', factor_name, '200707', '201806', 4)
+        df.to_csv("./two_factor_effect/{}.csv".format(factor_name))
+
+
+# In[10]:
+
+
+
+
+
+# In[12]:
+
+
+
+
